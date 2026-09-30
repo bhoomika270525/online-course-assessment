@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" style="max-width:500px">
+    <h2>Create Account</h2>
+    {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input class="form-control mb-2" name="username" placeholder="Username" required>
+        <input class="form-control mb-2" name="firstname" placeholder="First name">
+        <input class="form-control mb-2" name="lastname" placeholder="Last name">
+        <input class="form-control mb-2" type="password" name="psw" placeholder="Password" required>
+        <button class="btn btn-success" type="submit">Register</button>
+    </form>
+</div>
+</body>
+</html>

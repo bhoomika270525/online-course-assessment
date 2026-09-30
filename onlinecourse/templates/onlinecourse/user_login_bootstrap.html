@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" style="max-width:500px">
+    <h2>Login</h2>
+    {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input class="form-control mb-2" name="username" placeholder="Username" required>
+        <input class="form-control mb-2" type="password" name="psw" placeholder="Password" required>
+        <button class="btn btn-primary" type="submit">Login</button>
+        <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ course.name }} - OnlineCourse</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
+        <div>
+            {% if user.is_authenticated %}
+                <span class="mr-2">{{ user.first_name|default:user.username }}</span>
+                <a class="btn btn-link" href="{% url 'onlinecourse:logout' %}">Logout</a>
+            {% else %}
+                <a class="btn btn-link" href="{% url 'onlinecourse:login' %}">Login</a>
+                <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-3">
+    <h2>{{ course.name }}</h2>
+    <p class="text-muted">{{ course.description }}</p>
+
+    <div class="card-columns-vertical">
+        {% for lesson in course.lesson_set.all %}
+        <div class="card mt-2">
+            <div class="card-header">
+                <h5>Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}</h5>
+            </div>
+            <div class="card-body">{{ lesson.content }}</div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">No lessons have been added yet.</div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <hr>
+    <button class="btn btn-primary btn-block"
+            data-toggle="collapse"
+            data-target="#exam">
+        Start Exam
+    </button>
+
+    <div id="exam" class="collapse mt-3">
+        <form class="questionform"
+              action="{% url 'onlinecourse:submit' course.id %}"
+              method="post">
+            {% csrf_token %}
+
+            {% for question in course.question_set.all %}
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h5>Q{{ forloop.counter }}. {{ question.content }}</h5>
+                    <small>{{ question.grade }} points</small>
+                </div>
+                <div class="card-body">
+                    {% for choice in question.choice_set.all %}
+                    <div class="form-check mb-2">
+                        <label class="form-check-label">
+                            <input type="checkbox"
+                                   name="choice_{{ choice.id }}"
+                                   class="form-check-input"
+                                   value="{{ choice.id }}">
+                            {{ choice.content }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <input class="btn btn-success btn-block mt-3"
+                   type="submit"
+                   value="Submit Exam">
+        </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-3">
+        Please log in to take the exam.
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
